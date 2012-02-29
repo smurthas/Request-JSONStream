@@ -7,32 +7,27 @@ var stream = require('./index');
 // add express-jsonstream middleware
 var app = express.createServer(expressStream());
 
-// listen for GETs, write out some objects
-app.get('/stream-get', function(req, res) {
-  res.jsonStream({small:'world'});
-  res.jsonStream({after:'all'});
-  res.end();
-});
-
 // listen for POSTs, handle
 app.post('/stream-post', function(req, res) {
-  req.jsonStream(function(object) {
-    console.error("got object from post", object);
-    // put it in the database
-  }, function(errs) {
-    if (errs) console.error("post errs", errs);
+  req.jsonStream()
+  .on('object', console.log)
+  .on('response', function(response) {
+    if(response.statusCode !== 200) console.error('got non 200 response', response);
+  })
+  .on('error', console.error).on('end', function() {
     res.send('ok');
+    process.exit(0);
   });
 });
 
 app.listen(12345);
 
-// GET some JSON out of the streaming endpoint
-stream.recieveStream(request('http://localhost:12345/stream-get'), function(object) {
-  console.error("got object", object);
-}, function(errs) {
-  if (errs) console.error("get errs", errs);
-});
-
+var objs = [
+  {small:'world'},
+  {after:'all'}
+]
 // POST some JSON back to the streaming endpoint
-stream.createSendStream(request.post('http://localhost:12345/stream-post')).sendObject({hello:'world'});
+var sendStream = stream.createSendStream(request.post('http://localhost:12345/stream-post'));
+for(var i in objs) {
+  sendStream.sendObject(objs[i]);
+}

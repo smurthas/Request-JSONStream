@@ -1,7 +1,7 @@
 {
   "name": "request-jsonstream",
   "description": "Simple module to wrap a request and send or receive JSON as newline delimited object via request",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Simon Murtha-Smith <simon@murtha-smith.com>",
   "keywords": [
     "request",
@@ -14,7 +14,7 @@
     "url": "http://github.com/smurthas/request-jsonstreaming.git"
   },
   "dependencies": {
-    "json-stream-splitter": "0.0.2"
+    "json-stream-splitter": "0.0.3"
   },
   "engines": {
     "node": ">=0.6.0 <0.7.0"
